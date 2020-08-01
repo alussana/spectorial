@@ -1,7 +1,7 @@
 # Spectorial
 Instant access in the terminal to the D&amp;D 5e knowledgebase through the [official RESTful API](https://www.dnd5eapi.co/).
 
-* A Candlekeep monk will retrive for you the information you are looking for. So no need to interact with the code.
+* A Candlekeep monk will retrieve for you the information you are looking for. So no need to interact with the code.
 * Said monk is very efficient, therefore the app is also suitable to search things on-the-fly during sessions.
 * See the screenshots to look at how the requests are carried out.
 
