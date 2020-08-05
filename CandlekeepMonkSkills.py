@@ -48,9 +48,14 @@ def findObjIndex(objType, objName):
     indexesFile.close()
     indexesData = json.loads(indexesTextData)
     for entry in indexesData["results"]:
-        if entry["name"] == objName:
-            objIndex = entry["index"]
-            return(objIndex)
+        try:
+            if entry["name"] == objName:
+                objIndex = entry["index"]
+                return(objIndex)
+        except:
+            if entry["class"] == objName:
+                objIndex = entry["index"]
+                return(str(objIndex))
 
 def getObjData(objType, objIndex):
     objFileName = objType + "/" + objIndex
@@ -90,7 +95,10 @@ def listKnowledge(objType):
             i = i + 1
     else:
         for entry in indexesData["results"]:
-            indexesDict[i] = entry["name"]
+            try:
+                indexesDict[i] = entry["name"]
+            except:
+                indexesDict[i] = entry["class"]
             i = i + 1
     return(indexesData, indexesDict, pprint.pformat(indexesDict))
 
