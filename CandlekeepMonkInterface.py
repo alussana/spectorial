@@ -1,18 +1,19 @@
 import CandlekeepMonkSkills
 
 def candlekeepMonk(tomesAreOpen = None):
+    #CandlekeepMonkSkills.generateLibrary()
     if tomesAreOpen == None:
         print("\n Candlekeep Monk:")
         print(" \"Greetings. Just one moment and I'll help you with your quest.\"")
-        print(" *Starts looking for some tomes summoning the Internet planar portal*")
+        print(" *Opens a tome and summons the Internet plane portal*")
         tomesAreOpen = CandlekeepMonkSkills.openTheTomes()
         print("\n Candlekeep Monk:")
         if tomesAreOpen == False:
             print(" \"My apoligies. It seems that I cannot retrieve the books you are looking for.\"")
             print(" \"Did you check your internet connection?\"\n")
-            exit()
+            #exit()
         else:
-            print(" \"Here we are. What kind of knowledge are you searching for?\"\n")
+            print(" \"Here we are. What kind of knowledge are you looking for?\"\n")
     else:
         print("\n Candlekeep Monk:")
         print(" \"Do you need something else?\"")
