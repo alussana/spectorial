@@ -5,7 +5,7 @@ def candlekeepMonk(tomesAreOpen = None):
     if tomesAreOpen == None:
         print("\n Candlekeep Monk:")
         print(" \"Greetings. Just one moment and I'll help you with your quest.\"")
-        print(" *Opens a tome and summons the Internet plane portal*")
+        print(" *Opens a tome and summons the Internet planar portal*")
         tomesAreOpen = CandlekeepMonkSkills.openTheTomes()
         print("\n Candlekeep Monk:")
         if tomesAreOpen == False:
