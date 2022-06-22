@@ -18,7 +18,7 @@ bash spectorial.sh
 
 The information is readily retrieved and displayed with a minimal amount of input. Here a couple of examples:
 
-### Initialization and browsing cathegories
+### Initialization and browsing categories
 
 ```
  Candlekeep Monk:
