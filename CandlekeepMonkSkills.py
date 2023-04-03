@@ -128,7 +128,6 @@ def listKnowledge(objType):
 def searchKnowledge(indexesData, objName):
     indexesDict = {}
     i = 0
-    print(indexesData['results'])
     for entry in indexesData['results']:
         if entry['name'].startswith(objName) or entry['index'].startswith(objName):
             indexesDict[i] = entry['name']
@@ -151,8 +150,25 @@ def displayTomes(objType, objData):
             print(f"\t{equipment['equipment']['name']} x {equipment['quantity']}")
         for equipment_options in objData['starting_equipment_options']:
             print(f"\t{equipment_options['desc']}")
+
     elif objType == 'ability-scores':
-        print(f"\t{objData['full_name']}")
-        print(f"\t{list(pprint.pformat(objData['desc']))}")
+        print(f"\t{objData['full_name']}\n")
+        lines = pprint.pformat(objData['desc']).split('\n')
+        for line in lines:
+            print(f"\t{line[2:-2]}")
+
+    elif objType in ['alignments', 'conditions', 'damage-types', 'magic-items', 'magic-schools', 'spells']:
+        print(f"\t{objData['name']}\n")
+        lines = pprint.pformat(objData['desc']).split('\n')
+        for line in lines:
+            print(f"\t{line[2:-2]}")
+
+    elif objType == 'languages':
+        print(f"\t{objData['name']}\n")
+        print(f"\tType: {objData['type']}")
+        print("\tTypical Speakers:", end=' ')
+        print(*objData['typical_speakers'], sep=', ')
+        print(f"\tScript: {objData['script']}")
+    
     else:
         print(objData)

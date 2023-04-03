@@ -50,7 +50,8 @@ def candlekeepMonk(tomesAreOpen = None):
         except:
             indexesDataRefined = CandlekeepMonkSkills.searchKnowledge(indexesData, objNameInput)
             print()
-            print(indexesDataRefined)
+            for item in indexesDataRefined.items():
+                print(*item)
             objNameInput = input("\n --> : ")
 
     objName = indexesList[objNameInput]
