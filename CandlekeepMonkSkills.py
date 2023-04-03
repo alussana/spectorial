@@ -6,22 +6,19 @@ import pprint
 dndapiurl = 'https://www.dnd5eapi.co/api/'
 
 def generateLibrary():
-    tomesAreOpen = openTheTomes()
     objType = ''
-    indexesData, indexesDict, objDictPprint = listKnowledge(objType)
-    for i in indexesDict.keys():
-        try:
-            objType = indexesDict[i]
-            indexesData_i, indexesDict_i, objDictPprint_i = listKnowledge(objType)
-        except:
-            pass
-        for j in indexesDict_i.keys():
-            try:
-                objName = indexesDict_i[j]
+    _, indexesList = listKnowledge(objType)
+    try:
+        for index in indexesList:
+            objType = index
+            _, indexesList_i = listKnowledge(objType)
+
+            for index_i in indexesList_i:
+                objName = index_i
                 objIndex = findObjIndex(objType, objName)
-                objData, objDataPprint = getObjData(objType, objIndex)
-            except:
-                pass
+                objData = getObjData(objType, objIndex)
+    except Exception as e:
+        pass
 
 def downloadObjData(objType, objIndex):
     try:
@@ -85,12 +82,13 @@ def findObjIndex(objType, objName):
 def getObjData(objType, objIndex):
     objFileName = f'library/{objType}/{objIndex}'
     if os.path.isfile(objFileName) == False:
+       print(f"Candlekeep Monk:\n\"Mage hand-ing the tome of {objType}...\"")
        downloadObjData(objType, objIndex)
     objFile = open(objFileName)
     objTextData = objFile.read()
     objFile.close()
     objData = json.loads(objTextData)
-    return(objData, pprint.pformat(objData))
+    return(objData)
 
 def openTheTomes():
     os.makedirs('library/indexes', exist_ok=True)
@@ -113,29 +111,48 @@ def listKnowledge(objType):
         if objType == '':
             objType = 'api'
         indexesData = getIndexes(objType)
-        indexesDict = {}
-        i = 0
+
         if objType == 'api':
-            for key in indexesData.keys():
-                indexesDict[i] = key
-                i = i + 1
+            indexesList = list(indexesData.keys())
         else:
+            indexesList = []
             for entry in indexesData['results']:
                 try:
-                    indexesDict[i] = entry['name']
+                    indexesList.append(entry['name'])
                 except:
-                    indexesDict[i] = entry['class']
-                i = i + 1
-        return(indexesData, indexesDict, pprint.pformat(indexesDict))
+                    indexesList.append(entry['class'])
+        return indexesData, indexesList
     except:
         print(f'It seems that I cannot retrieve this page, I\'m afraid.')
 
 def searchKnowledge(indexesData, objName):
     indexesDict = {}
     i = 0
+    print(indexesData['results'])
     for entry in indexesData['results']:
         if entry['name'].startswith(objName) or entry['index'].startswith(objName):
             indexesDict[i] = entry['name']
         i = i + 1
-    return(pprint.pformat(indexesDict))
+    return indexesDict
     
+def displayTomes(objType, objData):
+    # print(objData)
+    if objType == 'classes':
+        print(f"\t{objData['name']} Class Features\n")
+        print(f"\tHit Dice: 1d{objData['hit_die']} per barbarian level")
+        print("\n\tProficiencies:")
+        for proficiency in objData['proficiencies']:
+            print(f"\t{proficiency['name']}")
+        print("\n\tSkill Choices:")
+        for choice in objData['proficiency_choices']:
+            print(f"\t{choice['desc']}")
+        print("\n\tStarting Equipment:")
+        for equipment in objData['starting_equipment']:
+            print(f"\t{equipment['equipment']['name']} x {equipment['quantity']}")
+        for equipment_options in objData['starting_equipment_options']:
+            print(f"\t{equipment_options['desc']}")
+    elif objType == 'ability-scores':
+        print(f"\t{objData['full_name']}")
+        print(f"\t{list(pprint.pformat(objData['desc']))}")
+    else:
+        print(objData)
