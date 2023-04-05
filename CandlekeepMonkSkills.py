@@ -60,7 +60,7 @@ def getIndexes(objType):
     indexesFile.close()
     indexesData = json.loads(indexesTextData)
     return(indexesData)
-    
+
 def findObjIndex(objType, objName):
     indexesFileName =  f'library/indexes/{objType}'
     if os.path.isfile(indexesFileName) == False:
@@ -133,7 +133,7 @@ def searchKnowledge(indexesData, objName):
             indexesDict[i] = entry['name']
         i = i + 1
     return indexesDict
-    
+
 def displayTomes(objType, objData):
     # print(objData)
     if objType == 'classes':
@@ -157,7 +157,7 @@ def displayTomes(objType, objData):
         for line in lines:
             print(f"\t{line[2:-2]}")
 
-    elif objType in ['alignments', 'conditions', 'damage-types', 'magic-items', 'magic-schools', 'spells']:
+    elif objType in ['alignments', 'conditions', 'damage-types', 'magic-items', 'magic-schools', 'spells', 'subclasses']:
         print(f"\t{objData['name']}\n")
         lines = pprint.pformat(objData['desc']).split('\n')
         for line in lines:
@@ -169,6 +169,11 @@ def displayTomes(objType, objData):
         print("\tTypical Speakers:", end=' ')
         print(*objData['typical_speakers'], sep=', ')
         print(f"\tScript: {objData['script']}")
-    
+
     else:
-        print(objData)
+        print(pprint.pformat(objData))
+'''
+Background
+equipment
+
+'''
