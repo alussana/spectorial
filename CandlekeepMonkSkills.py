@@ -135,7 +135,6 @@ def searchKnowledge(indexesData, objName):
     return indexesDict
 
 def displayTomes(objType, objData):
-    # print(objData)
     if objType == 'classes':
         print(f"\t{objData['name']} Class Features\n")
         print(f"\tHit Dice: 1d{objData['hit_die']} per barbarian level")
@@ -157,7 +156,7 @@ def displayTomes(objType, objData):
         for line in lines:
             print(f"\t{line[2:-2]}")
 
-    elif objType in ['alignments', 'conditions', 'damage-types', 'magic-items', 'magic-schools', 'spells', 'subclasses']:
+    elif objType in ['alignments', 'conditions', 'damage-types', 'magic-items', 'magic-schools', 'subclasses', 'traits', 'feats', 'skills', 'weapon-properties']:
         print(f"\t{objData['name']}\n")
         lines = pprint.pformat(objData['desc']).split('\n')
         for line in lines:
@@ -170,10 +169,203 @@ def displayTomes(objType, objData):
         print(*objData['typical_speakers'], sep=', ')
         print(f"\tScript: {objData['script']}")
 
-    else:
-        print(pprint.pformat(objData))
-'''
-Background
-equipment
+    elif objType == 'equipment-categories':
+        for index in objData['equipment']:
+            print(f"\t{index['name']}")
 
+    elif objType == 'features':
+        print(f"\t{objData['name']}\n")
+        print(f"\tClass: {objData['class']['name']}")
+        print(f"\tLevel: {objData['level']}\n")
+        lines = pprint.pformat(objData['desc']).split('\n')
+        for line in lines:
+            print(f"\t{line[2:-2]}")
+
+    elif objType == 'races':
+        print(f"\t{objData['name']}")
+
+        print(f"\n\tSize:")
+        lines = pprint.pformat(objData['size_description']).split('\n')
+        for line in lines:
+            print(f"\t{line[2:-2]}")
+
+        print(f"\n\tSpeed: {objData['speed']}ft")
+
+        print(f"\n\tAge:")
+        lines = pprint.pformat(objData['age']).split('\n')
+        for line in lines:
+            print(f"\t{line[2:-2]}")
+
+        print(f"\n\tLanguages: ")
+        lines = pprint.pformat(objData['language_desc']).split('\n')
+        for line in lines:
+            print(f"\t{line[2:-2]}")
+
+        print(f"\n\tAlignment: ")
+        lines = pprint.pformat(objData['alignment']).split('\n')
+        for line in lines:
+            print(f"\t{line[2:-2]}")
+
+        print(f"\n\tTraits:")
+        for trait in objData['traits']:
+            print(f"\t{trait['name']}")
+        print(f"\n\tAbility Bonuses:")
+        for bonus in objData['ability_bonuses']:
+            print(f"\t{bonus['ability_score']['name']}: {bonus['bonus']}")
+
+    elif objType == 'spells':
+        print(f"\t{objData['name']}\n")
+        print(f"\tLevel: {objData['level']}\n")
+        print(f"\tRange: {objData['range']}")
+
+        print('\tComponents: ', end='')
+        print(*objData['components'], sep=', ')
+        if 'M' in objData['components']:
+            print(f"\tMaterials: {objData['material']}")
+
+        print(f"\tCasting Time: {objData['casting_time']}")
+        print(f"\tDuration: {objData['duration']}")
+        print(f"\tRequires concentration: {objData['concentration']}")
+        print(f"\tIs ritual: {objData['ritual']}")
+        print(f"\tSchool: {objData['school']['name']}\n")
+
+        lines = pprint.pformat(objData['desc']).split('\n')
+        for line in lines:
+            print(f"\t{line[2:-2]}")
+        lines = pprint.pformat(objData['higher_level']).split('\n')
+        for line in lines:
+            print(f"\t{line[2:-2]}")
+
+        print(f"\n\tClasses: ", end='')
+        classes = []
+        for index in objData['classes']:
+            classes.append(index['name'])
+        print(*classes, sep=', ')
+        print(f"\t")
+
+    elif objType == 'backgrounds':
+        print(f"\t{objData['name']}\n")
+        print(f"\t{objData['feature']['name']}\n")
+        lines = pprint.pformat(objData['feature']['desc']).split('\n')
+        for line in lines:
+            print(f"\t{line[2:-2]}")
+
+    elif objType == 'rule-sections':
+        lines = pprint.pformat(objData['desc']).replace('\\n', '').split('\n')
+        for line in lines:
+            print(f"\t{line[2:-1]}")
+        print(len(objData['desc'].split('\n')))
+
+    elif objType == 'equipment':
+        print(f"\t{objData['name']}")
+        print(f"\t{objData['equipment_category']['name']}\n")
+        properties = [property['name'] for property in objData['properties']]
+
+        if objData['equipment_category']['index'] == 'armor':
+            print(f"\tArmor Class: {objData['armor_class']['base']}", end='')
+            if objData['armor_class']['dex_bonus']:
+                print(" + DEX modifier", end='')
+            print()
+            print(f"\tMinimum Strength Required: {objData['str_minimum']}")
+            print(f"\tStealth Disadvantage: {objData['stealth_disadvantage']}")
+
+
+        elif objData['equipment_category']['index'] == 'weapon':
+            print(f"\t{objData['category_range']}\n")
+
+            print(f"\tDamage:")
+            damage = objData['damage']
+            print(f"\t{damage['damage_dice']} {damage['damage_type']['name']}")
+            if 'Versatile' in properties:
+                damage = objData['two_handed_damage']
+                print(f"\t{damage['damage_dice']} {damage['damage_type']['name']} (versatile)")
+
+            print(f"\n\tRange: {objData['range']['normal']}", end='')
+            if objData['weapon_range'] == 'Ranged':
+                print(f"/{objData['range']['long']}", end='')
+            print()
+
+            if 'Thrown' in properties:
+                t_range = objData['throw_range']
+                print(f"\tThrow Range: {t_range['normal']}/{t_range['long']}")
+
+        if len(properties) > 0:
+            print("\tProperties:", end=' ')
+            print(*properties, sep=', ', end='\n\n')
+
+        if len(objData['contents']) > 0:
+            print(f"\tContents:")
+            for content in objData['contents']:
+                print(f"\t{content['item']['name']} x {content['quantity']}")
+            print()
+
+        print(f"\tCost: {objData['cost']['quantity']} {objData['cost']['unit']}")
+        if objData.get('weight', None) is not None:
+            print(f"\tWeight: {objData['weight']}")
+        if objData.get('quantity', None) is not None:
+            print(f"\tQuantity: {objData['quantity']}")
+
+        print()
+        lines = pprint.pformat(objData['desc']).split('\n')
+        for line in lines:
+            print(f"\t{line[2:-2:]}")
+
+    elif objType == 'rules':
+        print(f"\t{objData['name']}\n")
+        print(f"\tRule sections to read:")
+        for section in objData['subsections']:
+            print(f"\t - {section['name']}")
+
+    elif objType == 'monsters':
+        print(f"\t{objData['name']}")
+        print(f"\t{objData['size']} {objData['type']}, {objData['alignment']}")
+        
+        print(f"\n\tCR {objData['challenge_rating']} ({objData['xp']} XP)")
+        print(f"\tArmor Class: {objData['armor_class'][0]['value']}")
+        print(f"\tHit points: {objData['hit_points']}")
+        if len(objData['speed']) > 0:
+            print('\tSpeed:', end=' ')
+            for speed in objData['speed'].items():
+                print(f"{speed[0]}: {speed[1][:-1]}", end=', ')
+
+        print(f"\n\n\tSTR\tDEX\tCON\tINT\tWIS\tCHA")
+        print(f"\t{objData['strength']}\t{objData['dexterity']}\t{objData['constitution']}\t{objData['intelligence']}\t{objData['wisdom']}\t{objData['charisma']}")
+        
+        if len(objData['proficiencies']) > 0:
+            print(f"\n\tProficiencies:")
+            for proficiency in objData['proficiencies']:
+                print(f"\t - {proficiency['proficiency']['name']} +{proficiency['value']}")
+        print()
+
+        if len(objData['condition_immunities']) > 0:
+            print('\tCondition Immunities:', end=' ')
+            print(*objData['condition_immunities'], sep=', ')
+        if len(objData['damage_immunities']) > 0:
+            print('\tDamage Immunities:', end=' ')
+            print(*objData['damage_immunities'], sep=', ')
+        if len(objData['damage_resistances']) > 0:
+            print('\tDamage Resistances:', end=' ')
+            print(*objData['damage_resistances'], sep=', ')
+        if len(objData['damage_vulnerabilities']) > 0:
+            print('\tDamage Vulnerabilities:', end=' ')
+            print(*objData['damage_vulnerabilities'], sep=', ')
+
+        if len(objData['senses']) > 0:
+            print('\tSenses:', end=' ')
+            for sense in objData['senses'].items():
+                print(f"{sense[0]}: {sense[1]}", end=', ')
+        print(f"\n\tLanguages: {objData['languages']}")
+
+        print(f"\n\n{pprint.pformat(objData['special_abilities'])}")
+        # print(f"\t{objData['legendary_actions']}")
+        # print(f"\t{objData['special_abilities']}")
+
+    else:
+        lines = pprint.pformat(objData).split('\n')
+        for line in lines:
+            print(f"\t{line}")
+
+'''
+monsters
+subraces
 '''
