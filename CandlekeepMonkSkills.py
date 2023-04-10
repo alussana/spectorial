@@ -269,7 +269,6 @@ def displayTomes(objType, objData):
             print(f"\tMinimum Strength Required: {objData['str_minimum']}")
             print(f"\tStealth Disadvantage: {objData['stealth_disadvantage']}")
 
-
         elif objData['equipment_category']['index'] == 'weapon':
             print(f"\t{objData['category_range']}\n")
 
@@ -308,7 +307,7 @@ def displayTomes(objType, objData):
         print()
         lines = pprint.pformat(objData['desc']).split('\n')
         for line in lines:
-            print(f"\t{line[2:-2:]}")
+            print(f"\t{line[2:-2]}")
 
     elif objType == 'rules':
         print(f"\t{objData['name']}\n")
@@ -319,7 +318,7 @@ def displayTomes(objType, objData):
     elif objType == 'monsters':
         print(f"\t{objData['name']}")
         print(f"\t{objData['size']} {objData['type']}, {objData['alignment']}")
-        
+
         print(f"\n\tCR {objData['challenge_rating']} ({objData['xp']} XP)")
         print(f"\tArmor Class: {objData['armor_class'][0]['value']}")
         print(f"\tHit points: {objData['hit_points']}")
@@ -330,7 +329,8 @@ def displayTomes(objType, objData):
 
         print(f"\n\n\tSTR\tDEX\tCON\tINT\tWIS\tCHA")
         print(f"\t{objData['strength']}\t{objData['dexterity']}\t{objData['constitution']}\t{objData['intelligence']}\t{objData['wisdom']}\t{objData['charisma']}")
-        
+        print(f"\t({(objData['strength'] - 10) // 2})\t({(objData['dexterity'] - 10) // 2})\t({(objData['constitution'] - 10) // 2})\t({(objData['intelligence'] - 10) // 2})\t({(objData['wisdom'] - 10) // 2})\t({(objData['charisma'] - 10) // 2})")
+
         if len(objData['proficiencies']) > 0:
             print(f"\n\tProficiencies:")
             for proficiency in objData['proficiencies']:
@@ -356,9 +356,25 @@ def displayTomes(objType, objData):
                 print(f"{sense[0]}: {sense[1]}", end=', ')
         print(f"\n\tLanguages: {objData['languages']}")
 
-        print(f"\n\n{pprint.pformat(objData['special_abilities'])}")
-        # print(f"\t{objData['legendary_actions']}")
-        # print(f"\t{objData['special_abilities']}")
+        # for ability in objData['special_abilities']:
+        #     print(f"\n\t{ability['name']}")
+        #     lines = pprint.pformat(ability['desc'].replace('\\n', '')).split('\n')
+        #     for line in lines:
+        #         print(f"\t{line[1:-1]}")
+        #     if ability.get('usage', None) is not None:
+        #         print(f"\tUsage - {ability['usage']['times']} {ability['usage']['type']} {ability['usage']['rest_types']}")
+
+        lines = pprint.pformat(objData['actions']).split('\n')
+        for line in lines:
+            print(f"\t{line}")
+
+        lines = pprint.pformat(objData['legendary_actions']).split('\n')
+        for line in lines:
+            print(f"\t{line}")
+
+        lines = pprint.pformat(objData['special_abilities']).split('\n')
+        for line in lines:
+            print(f"\t{line}")
 
     else:
         lines = pprint.pformat(objData).split('\n')
