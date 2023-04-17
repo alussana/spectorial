@@ -137,7 +137,7 @@ def searchKnowledge(indexesData, objName):
 def displayTomes(objType, objData):
     if objType == 'classes':
         print(f"\t{objData['name']} Class Features\n")
-        print(f"\tHit Dice: 1d{objData['hit_die']} per barbarian level")
+        print(f"\tHit Dice: 1d{objData['hit_die']} per {objData['name']} level")
         print("\n\tProficiencies:")
         for proficiency in objData['proficiencies']:
             print(f"\t{proficiency['name']}")
@@ -167,7 +167,8 @@ def displayTomes(objType, objData):
         print(f"\tType: {objData['type']}")
         print("\tTypical Speakers:", end=' ')
         print(*objData['typical_speakers'], sep=', ')
-        print(f"\tScript: {objData['script']}")
+        if objData.get('script', None) is not None:
+            print(f"\tScript: {objData['script']}")
 
     elif objType == 'equipment-categories':
         for index in objData['equipment']:
@@ -250,6 +251,16 @@ def displayTomes(objType, objData):
         for line in lines:
             print(f"\t{line[2:-2]}")
 
+        print(f"\n\tStarting Proficiencies:")
+        for proficiency in objData['starting_proficiencies']:
+            print(f"\t{proficiency['name']}")
+
+        print(f"\n\tStarting Equipment:")
+        for equipment in objData['starting_equipment']:
+            print(f"\t{equipment['equipment']['name']} x {equipment['quantity']}")
+        for equipment in objData['starting_equipment_options']:
+            print(f"\t{equipment['from']['equipment_category']['name']}")
+
     elif objType == 'rule-sections':
         lines = pprint.pformat(objData['desc']).replace('\\n', '').split('\n')
         for line in lines:
@@ -327,9 +338,11 @@ def displayTomes(objType, objData):
             for speed in objData['speed'].items():
                 print(f"{speed[0]}: {speed[1][:-1]}", end=', ')
 
-        print(f"\n\n\tSTR\tDEX\tCON\tINT\tWIS\tCHA")
+        print('\n\t____________________________________________________________________________________')
+        print(f"\n\tSTR\tDEX\tCON\tINT\tWIS\tCHA")
         print(f"\t{objData['strength']}\t{objData['dexterity']}\t{objData['constitution']}\t{objData['intelligence']}\t{objData['wisdom']}\t{objData['charisma']}")
         print(f"\t({(objData['strength'] - 10) // 2})\t({(objData['dexterity'] - 10) // 2})\t({(objData['constitution'] - 10) // 2})\t({(objData['intelligence'] - 10) // 2})\t({(objData['wisdom'] - 10) // 2})\t({(objData['charisma'] - 10) // 2})")
+        print('\t____________________________________________________________________________________')
 
         if len(objData['proficiencies']) > 0:
             print(f"\n\tProficiencies:")
@@ -338,8 +351,9 @@ def displayTomes(objType, objData):
         print()
 
         if len(objData['condition_immunities']) > 0:
+            condition_immmuities = [condition['name'] for condition in objData['condition_immunities']]
             print('\tCondition Immunities:', end=' ')
-            print(*objData['condition_immunities'], sep=', ')
+            print(*condition_immmuities, sep=', ')
         if len(objData['damage_immunities']) > 0:
             print('\tDamage Immunities:', end=' ')
             print(*objData['damage_immunities'], sep=', ')
@@ -352,36 +366,71 @@ def displayTomes(objType, objData):
 
         if len(objData['senses']) > 0:
             print('\tSenses:', end=' ')
-            for sense in objData['senses'].items():
-                print(f"{sense[0]}: {sense[1]}", end=', ')
-        print(f"\n\tLanguages: {objData['languages']}")
+            senses = [f"{sense[0]}: {sense[1]}" for sense in objData['senses'].items()]
+            print(*senses, sep=', ')
 
-        # for ability in objData['special_abilities']:
-        #     print(f"\n\t{ability['name']}")
-        #     lines = pprint.pformat(ability['desc'].replace('\\n', '')).split('\n')
-        #     for line in lines:
-        #         print(f"\t{line[1:-1]}")
-        #     if ability.get('usage', None) is not None:
-        #         print(f"\tUsage - {ability['usage']['times']} {ability['usage']['type']} {ability['usage']['rest_types']}")
+        if len(objData['languages']) > 0:
+            print(f"\tLanguages: {objData['languages']}")
+        print('\t____________________________________________________________________________________')
 
-        lines = pprint.pformat(objData['actions']).split('\n')
+        if len(objData['actions']) > 0:
+            print("\n\tACTIONS")
+        for action in objData['actions']:
+            print(f"\n\t{action['name']}")
+            lines = pprint.pformat(action['desc']).replace('\\n', '')[:-1].split('\n')
+            for line in lines:
+                print(f"\t{line[1:-1]}")
+
+        if len(objData['legendary_actions']) > 0:
+            print("\n\tLEGENDARY ACTIONS")
+        for action in objData['legendary_actions']:
+            print(f"\n\t{action['name']}")
+            lines = pprint.pformat(action['desc']).replace('\\n', '')[:-1].split('\n')
+            for line in lines:
+                print(f"\t{line[1:-1]}")
+
+        if len(objData['special_abilities']) > 0:
+            print("\n\tSPECIAL ABILITIES")
+        for ability in objData['special_abilities']:
+            print(f"\n\t{ability['name']}")
+            lines = pprint.pformat(ability['desc']).replace('\\n', '')[:-1].split('\n')
+            for line in lines:
+                print(f"\t{line[1:-1]}")
+            if ability.get('usage', None) is not None:
+                print(f"\tUsage - {ability['usage']['times']} {ability['usage']['type']} {ability['usage']['rest_types']}")
+
+    elif objType == 'subraces':
+        print(f"\t{objData['race']['name']}: {objData['name']}\n")
+        lines = pprint.pformat(objData['desc']).split('\n')
         for line in lines:
-            print(f"\t{line}")
+            print(f"\t{line[2:-2]}")
 
-        lines = pprint.pformat(objData['legendary_actions']).split('\n')
-        for line in lines:
-            print(f"\t{line}")
+        if len(objData['ability_bonuses']) > 0:
+            print(f"\n\tAbility Score Increase: ")
+        for bonus in objData['ability_bonuses']:
+            print(f"\t - {bonus['ability_score']['name']} +{bonus['bonus']}")
 
-        lines = pprint.pformat(objData['special_abilities']).split('\n')
-        for line in lines:
-            print(f"\t{line}")
+        if len(objData['racial_traits']) > 0:
+            print(f"\n\tRacial Traits: ")
+        for trait in objData['racial_traits']:
+            print(f"\t - {trait['name']}")
 
-    else:
-        lines = pprint.pformat(objData).split('\n')
-        for line in lines:
-            print(f"\t{line}")
+        if len(objData['starting_proficiencies']) > 0:
+            print(f"\n\tStarting Proficiencies: ")
+        for proficiency in objData['starting_proficiencies']:
+            print(f"\t - {proficiency['name']}")
 
-'''
-monsters
-subraces
-'''
+        if len(objData['languages']) > 0:
+            print(f"\n\tLanguages: ")
+        for language in objData['languages']:
+            print(f"\t - {language['name']}")
+
+        if objData.get('language_options', None) is not None:
+            print(f"\n\tChoose {objData['language_options']['choose']} language(s) from the following:", end='\n')
+        for option in objData['language_options']['from']['options']:
+            print(f"\t{option['item']['name']}")
+    
+    elif objType == 'proficiencies':
+        print(f"\t{objData['name']}")
+        print(f"\tType: {objData['type']}")
+        print(f"\tReference: {objData['reference']['name']}")
