@@ -1,7 +1,7 @@
 import CandlekeepMonkSkills
 
 def candlekeepMonk(tomesAreOpen = None):
-    #CandlekeepMonkSkills.generateLibrary()
+    # CandlekeepMonkSkills.generateLibrary()
     if tomesAreOpen == None:
         print("\n Candlekeep Monk:")
         print(" \"Greetings. Just one moment and I'll help you with your quest.\"")
@@ -24,32 +24,40 @@ def candlekeepMonk(tomesAreOpen = None):
             exit()
         print("\n Candlekeep Monk:")
         print(" \"How may I assist you?\"\n")
+
     objType = ""
-    indexesData, indexesDict, objDictPprint = CandlekeepMonkSkills.listKnowledge(objType)
-    print(objDictPprint)
+    indexesData, indexesList = CandlekeepMonkSkills.listKnowledge(objType)
+    for index in enumerate(indexesList):
+        print(*index)
     objTypeInput = input("\n --> : ")
-    objType = indexesDict[int(objTypeInput)]
-    indexesData, indexesDict, objDictPprint = CandlekeepMonkSkills.listKnowledge(objType)
+
+    objType = indexesList[int(objTypeInput)]
+    indexesData, indexesList = CandlekeepMonkSkills.listKnowledge(objType)
     indexesData_count = int(indexesData["count"])
     print("\n Candlekeep Monk:")
     if indexesData_count <= 40:
         print(f" \"Very well, {objType}. Here is what I have.\"\n")
-        print(objDictPprint)
+        for index in enumerate(indexesList):
+            print(*index)
     else:
         print(f" \"Let me see... I've got {indexesData_count} results for {objType}.")
         print(" Do you know its name already? If not, try to use the first letters only.\"")
     objNameInput = input("\n --> : ")
+
     while type(objNameInput) != int:
         try:
             objNameInput = int(objNameInput)
         except:
-            indexesDataRefinedPprint = CandlekeepMonkSkills.searchKnowledge(indexesData, objNameInput)
+            indexesDataRefined = CandlekeepMonkSkills.searchKnowledge(indexesData, objNameInput)
             print()
-            print(indexesDataRefinedPprint)
+            for item in indexesDataRefined.items():
+                print(*item)
             objNameInput = input("\n --> : ")
-    objName = indexesDict[objNameInput]
+
+    objName = indexesList[objNameInput]
     objIndex = CandlekeepMonkSkills.findObjIndex(objType, objName)
-    objData, objDataPprint = CandlekeepMonkSkills.getObjData(objType, objIndex)
+    objData = CandlekeepMonkSkills.getObjData(objType, objIndex)
+    
     print("\n Candlekeep Monk:")
     print(" \"Here is what you asked for. Use it wisely.\"\n")
     print("     _______________________________________________________________________________________")
@@ -57,9 +65,7 @@ def candlekeepMonk(tomesAreOpen = None):
     print("(O)===)><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><)==(O)")
     print("    \/______________________________________________________________________________________/")
     print()
-    toprint = objDataPprint.split("\n")
-    for line in toprint:
-        print("      " + line)
+    CandlekeepMonkSkills.displayTomes(objType, objData)
     print("     _______________________________________________________________________________________")
     print("    /\                                                                                      \\")
     print("(O)===)><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><)==(O)")
