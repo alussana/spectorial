@@ -1,14 +1,21 @@
-# Spectorial
+<p align="center">
+  <img width="380" src="https://i.imgur.com/Axosirk.png">
+  <br>
+  The D&D 5th ed knowledgebase in your terminal
+  <br><br>
+</p>
+
+# Overview
 
 Instant access in the terminal to the D&D 5e knowledgebase using the [RESTful API](https://www.dnd5eapi.co/).
 
 * A Candlekeep monk will retrieve for you the information you are looking for. So no need to interact with the code.
 * Said monk is very efficient, therefore the app is also suitable to search things on-the-fly during sessions.
-* See the screenshots to look at how the requests are carried out.
+* See an example below.
 
-## Using Spectorial
+# Usage
 
-Clone the repository. Run `spectorial.sh` to execute Spectorial. Done.
+Clone the repository. Run Spectorial. Done.
 
 ```
 git clone https://github.com/alussana/spectorial
@@ -16,9 +23,9 @@ cd spectorial
 bash spectorial.sh
 ```
 
-The information is readily retrieved and displayed with a minimal amount of input. Here a couple of examples:
+The information you are looking for is readily retrieved and displayed with a minimal amount of input. Here a couple of examples:
 
-### Initialization and browsing categories
+## Initialization and browsing categories
 
 ```
  Candlekeep Monk:
@@ -75,7 +82,7 @@ The information is readily retrieved and displayed with a minimal amount of inpu
  --> :
 ```
 
-### Searching and displaying Magic Missile
+## Searching and displaying Magic Missile
 
 ```
  Candlekeep Monk:
